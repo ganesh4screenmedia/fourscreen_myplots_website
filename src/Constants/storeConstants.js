@@ -1,3 +1,3 @@
-export const commonActions =  {
-    LOADER:'LOADER'
-}
+export const commonActions = {
+  LOADER: 'LOADER',
+};

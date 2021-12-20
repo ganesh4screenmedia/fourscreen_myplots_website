@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import Router from './Router';
 import { getConfiguredStore } from './Store/configureStore';
 
-const store = getConfiguredStore()
+const store = getConfiguredStore();
 
 const App = function () {
   return (
