@@ -14,56 +14,71 @@ import QR from '../../assests/images/QR.png';
 
 const CopyRight = function () {
   return (
-    <div className="main_container">
-      <div>
-        <div className="content_container">
-          <div className="plan_a_plot_container">
-            <div className="text_container">
-              <span className="heading"> Plan a plot </span>
-              <span className="heading">Go to a plot</span>
-              <span className="explanation">{plotExplanation}</span>
-            </div>
-            <img src={plotImage} alt="plot" className="plot_image" />
+    <div>
+      <div className="main-container">
+        <div className="row" style={{ padding: 10 }}>
+          <div className="col-1 col-s-1">
+            <h1>Plan a plot</h1>
+            <h1>Go to a plot</h1>
+            <p style={{ color: 'rgba(0, 0, 0, 0.5)' }}>{plotExplanation}</p>
           </div>
-          <div className="discover_heading_container">
-            <span className="discover_heading">Discover events, parties and people</span>
-          </div>
-          <div className="plan_a_plot_container">
-            <div className="plan_container">
-              <img src={planPlot} alt="plan" />
-              <span className="conatainer_heading">Plan</span>
-              <span className="conatainer_explanation">{planExplanation}</span>
+
+          <div className="col-2 col-s-I">
+            <div className="side-image">
+              <img src={plotImage} alt="plot" />
             </div>
-            <div className="connect_container">
-              <img src={connect} alt="connect" />
-              <span className="conatainer_heading" style={{ color: '#FFFFFF' }}>
-                Connect
-              </span>
-              <span className="conatainer_explanation" style={{ color: '#FFFFFF' }}>
-                {connectExplanation}
-              </span>
-            </div>
-            <div className="experince_container">
-              <img src={experince} alt="experince" />
-              <span className="conatainer_heading">Experience</span>
-              <span className="conatainer_explanation">{experinceExplanation}</span>
-            </div>
-          </div>
-          <div className="discover_heading_container">
-            <span className="discover_heading">Scan to plot</span>
-            <span style={{ fontSize: '10px', marginTop: '20px', color: '#000000' }}>
-              The QR code will take you right to the app store where you can get the MyPlots app for
-              free.
-            </span>
-          </div>
-          <div className="qr_container">
-            <img src={QR} alt="QR" />
           </div>
         </div>
+        <div className="discover-header">
+          <h1>Discover events, parties and people</h1>
+        </div>
+        <div className="row" style={{ padding: '50px' }}>
+          <div className="col-2 col-s-2 menu">
+            <div className="image">
+              <img src={planPlot} alt="plan" />
+            </div>
+            <div style={{ padding: '5px' }} className="image">
+              <h3>Plan</h3>
+            </div>
+            <div style={{ textAlign: 'center' }} className="explanation" id="explanation">
+              <p>{planExplanation}</p>
+            </div>
+          </div>
+          <div className="col-2 col-s-2 menu">
+            <div className="image">
+              <img src={connect} alt="plan" />
+            </div>
+            <div style={{ padding: '5px' }} className="image">
+              <h3>Connect</h3>
+            </div>
+            <div style={{ textAlign: 'center' }} className="explanation">
+              <p>{connectExplanation}</p>
+            </div>
+          </div>
+          <div className="col-2 col-s-2 menu">
+            <div className="image">
+              <img src={experince} alt="plan" />
+            </div>
+            <div style={{ padding: '5px' }} className="image">
+              <h3>Experience</h3>
+            </div>
+            <div style={{ textAlign: 'center' }} className="explanation">
+              <p>{experinceExplanation}</p>
+            </div>
+          </div>
+        </div>
+        <div style={{ textAlign: 'center', paddingTop: '20px' }}>
+          <h1>Scan to plot</h1>
+          <p style={{ fontSize: '18px' }}>
+            The QR code will take you right to the app store where you can get the MyPlots app for
+            free.
+          </p>
+        </div>
+        <div className="image">
+          <img src={QR} alt="QR" />
+        </div>
         <div className="footer">
-          <span style={{ fontSize: '16px', color: '#FFFFFF' }}>
-            Copyrights @2021. All rights reserved
-          </span>
+          <p>Copyrights @2021. All rights reserved</p>
         </div>
       </div>
     </div>
