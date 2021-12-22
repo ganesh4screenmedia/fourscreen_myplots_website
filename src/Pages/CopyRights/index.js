@@ -20,12 +20,12 @@ const CopyRight = function () {
           <div className="col-1 col-s-1">
             <h1>Plan a plot</h1>
             <h1>Go to a plot</h1>
-            <p style={{ color: 'rgba(0, 0, 0, 0.5)' }}>{plotExplanation}</p>
+            <p style={{ color: 'rgba(0, 0, 0, 0.5)'}}>{plotExplanation}</p>
           </div>
 
           <div className="col-2 col-s-I">
             <div className="side-image">
-              <img src={plotImage} alt="plot" />
+              <img src={plotImage} alt="plot" width='310' height='378'/>
             </div>
           </div>
         </div>
@@ -40,7 +40,7 @@ const CopyRight = function () {
             <div style={{ padding: '5px' }} className="image">
               <h3>Plan</h3>
             </div>
-            <div style={{ textAlign: 'center' }} className="explanation" id="explanation">
+            <div  className="explanation">
               <p>{planExplanation}</p>
             </div>
           </div>
@@ -51,7 +51,7 @@ const CopyRight = function () {
             <div style={{ padding: '5px' }} className="image">
               <h3>Connect</h3>
             </div>
-            <div style={{ textAlign: 'center' }} className="explanation">
+            <div  className="explanation">
               <p>{connectExplanation}</p>
             </div>
           </div>
@@ -62,20 +62,20 @@ const CopyRight = function () {
             <div style={{ padding: '5px' }} className="image">
               <h3>Experience</h3>
             </div>
-            <div style={{ textAlign: 'center' }} className="explanation">
+            <div  className="explanation">
               <p>{experinceExplanation}</p>
             </div>
           </div>
         </div>
-        <div style={{ textAlign: 'center', paddingTop: '20px' }}>
+        <div className='scan-plot'>
           <h1>Scan to plot</h1>
-          <p style={{ fontSize: '18px' }}>
+          <p>
             The QR code will take you right to the app store where you can get the MyPlots app for
             free.
           </p>
         </div>
         <div className="image">
-          <img src={QR} alt="QR" />
+          <img src={QR} alt="QR" width='336' height='494'/>
         </div>
         <div className="footer">
           <p>Copyrights @2021. All rights reserved</p>

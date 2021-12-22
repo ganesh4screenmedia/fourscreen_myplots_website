@@ -4,11 +4,13 @@
     padding: 8px;
     font-size: 12px;
     background-color: #4F299D;
+    margin-top: 5px;
 }
 
 * {
     box-sizing: border-box;
     letter-spacing: 0.08em;
+    font-family: Product Sans Regular;
   }
   
   .row::after {
@@ -22,6 +24,16 @@
       justify-content: center;
       align-items: center;
   }
+
+  .scan-plot {
+    text-align :center;
+    padding-top : 20px; 
+  }
+
+  .scan-plot p {
+    font-size: 18px;
+  }
+
   .explanation {
       color: rgba(0, 0, 0, 0.5);
       text-align: center;

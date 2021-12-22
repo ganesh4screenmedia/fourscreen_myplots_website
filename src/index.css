@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: "Product Sans Bold";
+  src: local("Product Sans Bold"),
+   url('./assests/fonts/Product Sans Bold.ttf') format("truetype");
+  font-weight: bold;
+  }
+  @font-face {
+    font-family: "Product Sans Regular";
+    src: local("Product Sans Regular"),
+     url('./assests/fonts/Product Sans Regular.ttf') format("truetype");
+    font-weight: normal;
+    }
+  
