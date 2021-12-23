@@ -6,11 +6,11 @@ import {
   plotExplanation,
 } from '../../Constants';
 import './copyRights.css';
-import plotImage from '../../assests/images/plotMap.png';
+import plotImage from '../../assests/images/plotMap.svg';
 import planPlot from '../../assests/images/planPlot.png';
 import connect from '../../assests/images/connect.png';
 import experince from '../../assests/images/experince.png';
-import QR from '../../assests/images/QR.png';
+import QR from '../../assests/images/QR.svg';
 
 const CopyRight = function () {
   return (
@@ -23,7 +23,7 @@ const CopyRight = function () {
             <p style={{ color: 'rgba(0, 0, 0, 0.5)' }}>{plotExplanation}</p>
           </div>
 
-          <div className="col-2 col-s-I">
+          <div className="col-3 col-s-I">
             <div className="side-image">
               <img src={plotImage} alt="plot" width="310" height="378" />
             </div>

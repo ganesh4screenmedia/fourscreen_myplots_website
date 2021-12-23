@@ -27,7 +27,8 @@
 
   .scan-plot {
     text-align :center;
-    padding-top : 20px; 
+    padding-left: 10px; 
+    padding-right: 10px;
   }
 
   .scan-plot p {
@@ -48,6 +49,10 @@
       background-color: #4F299D;
       border-radius: 5px;
       color: white;
+  }
+
+  .menu {
+    min-height: 420px;
   }
   
   [class*="col-"] {
@@ -76,13 +81,31 @@
   [class*="col-"] {
     width: 100%;
   }
-  
   @media only screen and (min-width: 600px) {
     .col-s-1 {width: 95%;}
     .col-s-2 {width: 33%;}
     .col-s-I {width: 100%;}
   }
+
+
   @media only screen and (min-width: 768px) {
     .col-1 {width: 65%;}
     .col-2 {width: 33%;}
+    .col-3 {width: 33%;}
+  }
+
+  @media only screen and (max-width: 1030px) {
+    .col-2 {height: 510px;}
+  }
+
+  @media only screen and (max-width: 771px) {
+    .col-2 {height: 600px;}
+  }
+
+  @media only screen and (max-width: 628px) {
+    .col-2 {height: 665px;}
+  }
+
+  @media only screen and (max-width: 600px) {
+    .col-2 {height: auto;}
   }
