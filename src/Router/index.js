@@ -7,7 +7,7 @@ const Router = function () {
   return (
     <div>
       <Routes>
-        <Route path="/copy_rights" element={<CopyRight />} />
+        <Route path="/" element={<CopyRight />} />
       </Routes>
     </div>
   );

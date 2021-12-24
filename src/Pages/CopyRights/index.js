@@ -113,11 +113,11 @@ const CopyRight = function () {
       </div>
       <CustomModal
         open={open}
-        modalHeight="350px"
+        modalHeight="400px"
         modalWidth={width < 400 ? '300px' : '600px'}
         onClose={onClose}
       >
-        <Form />
+        <Form  handleOnClose={onClose}  />
       </CustomModal>
     </div>
   );
