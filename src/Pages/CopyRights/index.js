@@ -1,4 +1,6 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import React, { useEffect, useState } from 'react';
 import {
   connectExplanation,
   experinceExplanation,
@@ -11,8 +13,33 @@ import planPlot from '../../assests/images/planPlot.png';
 import connect from '../../assests/images/connect.png';
 import experince from '../../assests/images/experince.png';
 import QR from '../../assests/images/QR.svg';
+import CustomModal from '../../Components/CustomModal';
+import Form from './form';
 
 const CopyRight = function () {
+  const [open, setOpen] = useState(false);
+
+  const [width, setWidth] = useState(window.innerWidth);
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    };
+  }, []);
+
+  const onContactUs = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div>
       <div className="main-container">
@@ -79,8 +106,19 @@ const CopyRight = function () {
         </div>
         <div className="footer">
           <p>Copyrights @2021. All rights reserved</p>
+          <span className="contact-us" onClick={onContactUs}>
+            Contact us
+          </span>
         </div>
       </div>
+      <CustomModal
+        open={open}
+        modalHeight="350px"
+        modalWidth={width < 400 ? '300px' : '600px'}
+        onClose={onClose}
+      >
+        <Form />
+      </CustomModal>
     </div>
   );
 };
