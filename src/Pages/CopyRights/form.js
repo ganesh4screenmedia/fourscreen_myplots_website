@@ -45,7 +45,6 @@ const Form = function ({ handleOnClose, classes }) {
 
     const content = await rawResponse.json();
 
-
     console.log(content);
   };
 

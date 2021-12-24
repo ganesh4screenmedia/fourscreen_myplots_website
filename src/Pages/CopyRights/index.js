@@ -117,7 +117,7 @@ const CopyRight = function () {
         modalWidth={width < 400 ? '300px' : '600px'}
         onClose={onClose}
       >
-        <Form  handleOnClose={onClose}  />
+        <Form handleOnClose={onClose} />
       </CustomModal>
     </div>
   );
