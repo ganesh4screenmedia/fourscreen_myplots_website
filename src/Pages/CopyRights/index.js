@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useEffect, useState } from 'react';
-import {useNavigate} from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
 import {
   connectExplanation,
   experinceExplanation,
@@ -20,7 +20,7 @@ import Form from './form';
 
 const CopyRight = function () {
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [width, setWidth] = useState(window.innerWidth);
 
@@ -40,11 +40,11 @@ const CopyRight = function () {
   };
 
   const onTerms = () => {
-    navigate("/Terms")
+    navigate('/Terms');
   };
 
   const onPrivacy = () => {
-    navigate("/Privacy")
+    navigate('/Privacy');
   };
 
   const onClose = () => {
@@ -112,10 +112,10 @@ const CopyRight = function () {
             free.
           </p>
         </div>
-        <div className='image' >
+        <div className="image">
           <img src={QR} alt="QR" width="336" height="494" />
-          <div className='qr-scanner-container'>
-            <img src={qrLink} alt='qr_Code'/>
+          <div className="qr-scanner-container">
+            <img src={qrLink} alt="qr_Code" />
           </div>
         </div>
         <div className="footer">
@@ -137,7 +137,7 @@ const CopyRight = function () {
         open={open}
         modalHeight="400px"
         modalWidth={width < 600 ? '300px' : '600px'}
-        left='50%'
+        left="50%"
         onClose={onClose}
       >
         <Form handleOnClose={onClose} />

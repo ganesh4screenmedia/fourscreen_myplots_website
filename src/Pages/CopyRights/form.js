@@ -52,7 +52,7 @@ const Form = function ({ handleOnClose, classes }) {
     if (email !== '' && validateEmail(email)) {
       // make api call
 
-      sendFeedback({ email, message });
+      sendFeedback({ email, complaint: message });
     } else setIsEmailInvalid(true);
   };
   const themeColor = '#4F299D';
