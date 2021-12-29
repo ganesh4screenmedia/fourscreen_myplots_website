@@ -1,0 +1,30 @@
+  li{
+    Margin-top: 15px;
+    Margin-bottom: 15px;
+}
+.c1 {
+    margin-left: 36pt;
+    padding-top: 12pt;
+    padding-bottom: 8pt;
+    line-height: 1.0791666666666666;
+    orphans: 2;
+    widows: 2;
+    text-align: left
+}
+table, td, th {
+    border: 1px solid black;
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+}
+td {
+    height: 70px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.collectedTable{
+    text-align: center;
+}
