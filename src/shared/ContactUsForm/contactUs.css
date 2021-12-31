@@ -1,0 +1,19 @@
+.close-div-container{
+    display: flex;
+    justify-content: space-between;
+    padding: 5 ;
+    width: 100%;
+    align-items: center;
+  }
+  .submit-div-container{
+    display: flex;
+    justify-content: end;
+    padding: 5 ;
+  }
+  .form-root-container{
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
