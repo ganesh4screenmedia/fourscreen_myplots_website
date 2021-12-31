@@ -3,7 +3,7 @@ import React from 'react';
 import { Route, Routes } from 'react-router';
 import CopyRight from '../Pages/CopyRights';
 import Privacy from '../Pages/PrivacyPolicy';
-import Terms from '../Pages/TermsOfUse';
+// import Terms from '../Pages/TermsOfUse';
 
 const Router = function () {
   return (
@@ -11,7 +11,7 @@ const Router = function () {
       <Routes>
         <Route path="/" element={<CopyRight />} />
         <Route path="/Privacy" element={<Privacy />} />
-        <Route path="/Terms" element={<Terms />} />
+        <Route path="/Terms" element={<Privacy />} />
       </Routes>
     </div>
   );
