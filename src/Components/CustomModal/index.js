@@ -17,7 +17,7 @@ const CustomModal = function ({
   modalWidth = 400,
   modalHeight = 400,
   left = '50%',
-  backgroundColor='white'
+  backgroundColor = 'white',
 }) {
   return (
     <Modal
@@ -26,7 +26,16 @@ const CustomModal = function ({
       aria-describedby="parent-modal-description"
       onClose={onClose}
     >
-      <div style={{ ...style, width: modalWidth, height: modalHeight, outline: 'none', left ,backgroundColor}}>
+      <div
+        style={{
+          ...style,
+          width: modalWidth,
+          height: modalHeight,
+          outline: 'none',
+          left,
+          backgroundColor,
+        }}
+      >
         {children}
       </div>
     </Modal>
