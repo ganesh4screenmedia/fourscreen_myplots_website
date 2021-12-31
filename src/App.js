@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import Router from './Router';
 import { getConfiguredStore } from './Store/configureStore';
 import { SnackBar } from './Components/CustomSnackBar';
+import Loader from './Components/Loader';
 
 const store = getConfiguredStore();
 
@@ -21,6 +22,7 @@ const App = function () {
     <Provider store={store}>
       <Navigation />
       <SnackBar />
+      <Loader />
     </Provider>
   );
 };

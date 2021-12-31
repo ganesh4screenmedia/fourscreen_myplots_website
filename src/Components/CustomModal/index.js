@@ -8,7 +8,6 @@ const style = {
   transform: 'translate(-50%, -50%)',
   width: 500,
   height: 100,
-  backgroundColor: 'white',
 };
 
 const CustomModal = function ({
@@ -18,6 +17,7 @@ const CustomModal = function ({
   modalWidth = 400,
   modalHeight = 400,
   left = '50%',
+  backgroundColor='white'
 }) {
   return (
     <Modal
@@ -26,7 +26,7 @@ const CustomModal = function ({
       aria-describedby="parent-modal-description"
       onClose={onClose}
     >
-      <div style={{ ...style, width: modalWidth, height: modalHeight, outline: 'none', left }}>
+      <div style={{ ...style, width: modalWidth, height: modalHeight, outline: 'none', left ,backgroundColor}}>
         {children}
       </div>
     </Modal>
