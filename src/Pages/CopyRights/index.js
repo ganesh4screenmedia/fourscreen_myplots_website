@@ -16,7 +16,8 @@ import connect from '../../assests/images/connect.png';
 import experince from '../../assests/images/experince.png';
 import QR from '../../assests/images/QR.svg';
 import CustomModal from '../../Components/CustomModal';
-import Form from './form';
+import Form from '../../shared/ContactUsForm';
+import Footer from '../../shared/Footer';
 
 const CopyRight = function () {
   const [open, setOpen] = useState(false);
@@ -118,20 +119,7 @@ const CopyRight = function () {
             <img src={qrLink} alt="qr_Code" />
           </div>
         </div>
-        <div className="footer">
-          <p>Copyrights @2021. All rights reserved</p>
-          <span className="contact-us" onClick={onContactUs}>
-            Contact us
-          </span>
-          |
-          <span className="contact-us" onClick={onPrivacy}>
-            Privacy policy
-          </span>
-          |
-          <span className="contact-us" onClick={onTerms}>
-            Terms of use
-          </span>
-        </div>
+        <Footer onContactUs={onContactUs} onPrivacy={onPrivacy} onTerms={onTerms} />
       </div>
       <CustomModal
         open={open}
