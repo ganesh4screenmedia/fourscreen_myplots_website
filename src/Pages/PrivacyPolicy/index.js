@@ -2,45 +2,11 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import CustomModal from '../../Components/CustomModal';
+import React from 'react';
 import Footer from '../../shared/Footer';
-import Form from '../../shared/ContactUsForm';
 import './privacy.css';
 
 const Privacy = function () {
-  const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const [width, setWidth] = useState(window.innerWidth);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-
-    return () => {
-      window.removeEventListener('resize', handleWindowSizeChange);
-    };
-  }, []);
-  const onContactUs = () => {
-    setOpen(true);
-  };
-
-  const onTerms = () => {
-    navigate('/Terms');
-  };
-
-  const onPrivacy = () => {
-    navigate('/Privacy');
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
   return (
     <div>
       <div style={{ padding: '10px' }}>
@@ -706,16 +672,7 @@ const Privacy = function () {
           .
         </p>
       </div>
-      <Footer onContactUs={onContactUs} onPrivacy={onPrivacy} onTerms={onTerms} />
-      <CustomModal
-        open={open}
-        modalHeight="400px"
-        modalWidth={width < 600 ? '300px' : '600px'}
-        left="50%"
-        onClose={onClose}
-      >
-        <Form handleOnClose={onClose} />
-      </CustomModal>
+      <Footer />
     </div>
   );
 };

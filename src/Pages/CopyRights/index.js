@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import {
   connectExplanation,
   experinceExplanation,
@@ -15,43 +14,9 @@ import planPlot from '../../assests/images/planPlot.png';
 import connect from '../../assests/images/connect.png';
 import experince from '../../assests/images/experince.png';
 import QR from '../../assests/images/QR.svg';
-import CustomModal from '../../Components/CustomModal';
-import Form from '../../shared/ContactUsForm';
 import Footer from '../../shared/Footer';
 
 const CopyRight = function () {
-  const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const [width, setWidth] = useState(window.innerWidth);
-
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-
-    return () => {
-      window.removeEventListener('resize', handleWindowSizeChange);
-    };
-  }, []);
-
-  const onContactUs = () => {
-    setOpen(true);
-  };
-
-  const onTerms = () => {
-    navigate('/Terms');
-  };
-
-  const onPrivacy = () => {
-    navigate('/Privacy');
-  };
-
-  const onClose = () => {
-    setOpen(false);
-  };
-
   return (
     <div>
       <div className="main-container">
@@ -119,17 +84,8 @@ const CopyRight = function () {
             <img src={qrLink} alt="qr_Code" />
           </div>
         </div>
-        <Footer onContactUs={onContactUs} onPrivacy={onPrivacy} onTerms={onTerms} />
+        <Footer />
       </div>
-      <CustomModal
-        open={open}
-        modalHeight="400px"
-        modalWidth={width < 600 ? '300px' : '600px'}
-        left="50%"
-        onClose={onClose}
-      >
-        <Form handleOnClose={onClose} />
-      </CustomModal>
     </div>
   );
 };
