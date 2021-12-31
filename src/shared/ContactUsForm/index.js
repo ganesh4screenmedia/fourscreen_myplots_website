@@ -1,11 +1,12 @@
-import { Button, FormControl, IconButton, TextField } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Button, FormControl, TextField } from '@mui/material';
 import React, { useState } from 'react';
 import { withStyles } from '@mui/styles';
+import { useDispatch } from 'react-redux';
 import { validateEmail } from '../../helpers';
 import './contactUs.css';
 import { toastType } from '../../Constants';
 import useToast from '../../CustomHooks/Toast';
+import { setLoader } from '../../Store/actions';
 
 const styles = () => ({
   cssOutlinedInput: {
@@ -24,6 +25,7 @@ const Form = function ({ handleOnClose, classes }) {
   const [isMessage, setIsMessage] = useState(false);
   const [message, setMessage] = useState('');
   const Toaster = useToast();
+  const dispatch = useDispatch();
 
   const onEmailChange = (event) => {
     if (isEmailInvalid) {
@@ -41,6 +43,7 @@ const Form = function ({ handleOnClose, classes }) {
   };
 
   const sendFeedback = (payload = {}) => {
+    dispatch(setLoader(true));
     fetch(`${process.env.REACT_APP_BASE_URL}contactUs`, {
       method: 'POST',
       headers: {
@@ -50,6 +53,8 @@ const Form = function ({ handleOnClose, classes }) {
     })
       .then(async (response) => {
         if (response.ok) {
+          setMessage('');
+          setEmail('');
           const options = {
             message: 'Your message has been sent',
             severity: toastType.success,
@@ -85,6 +90,7 @@ const Form = function ({ handleOnClose, classes }) {
       })
       .finally(() => {
         if (handleOnClose) handleOnClose();
+        dispatch(setLoader(false));
       });
   };
 
@@ -108,14 +114,13 @@ const Form = function ({ handleOnClose, classes }) {
       <div className="close-div-container">
         <div />
         <span>Contact Us</span>
-        <IconButton onClick={handleOnClose}>
-          <CloseIcon color={themeColor} />
-        </IconButton>
+        <div />
       </div>
       <div>
         <div style={{ margin: 10, marginTop: 10 }}>
           <TextField
             fullWidth
+            value={email}
             error={isEmailInvalid}
             label="E-mail"
             helperText={isEmailInvalid ? 'Invalid email' : ''}
@@ -127,6 +132,7 @@ const Form = function ({ handleOnClose, classes }) {
             multiline
             fullWidth
             label="Type a message"
+            value={message}
             error={isMessage}
             helperText={isMessage ? 'Please enter a message' : ''}
             InputProps={{

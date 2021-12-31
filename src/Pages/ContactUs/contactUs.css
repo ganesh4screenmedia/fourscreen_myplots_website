@@ -1,0 +1,15 @@
+.contact-us-main-container {
+    background-color:#4F299D;
+}
+
+.form-main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-container {
+    height:"400px";
+    background-color:white;
+    border-radius:'5px';
+}
