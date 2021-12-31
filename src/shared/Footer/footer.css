@@ -1,0 +1,16 @@
+.footer {
+    text-align: center;
+    color: white;
+    padding: 8px;
+    font-size: 12px;
+    background-color: #4F299D;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.contact-us {
+    padding: 12px;
+    text-decoration-line: underline;
+    cursor: pointer;
+  }
