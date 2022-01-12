@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Form from '../../shared/ContactUsForm';
 import Footer from '../../shared/Footer';
+import Header from '../../shared/Header';
 import './contactUs.css';
 
 const ContactUs = function () {
@@ -20,13 +21,16 @@ const ContactUs = function () {
   }, []);
 
   return (
-    <div style={{ width, height }} className="contact-us-main-container">
-      <div style={{ height: height - 60 }} className="form-main-container">
-        <div style={{ width: width < 600 ? '300px' : '600px' }} className="form-container">
-          <Form handleOnClose={() => {}} />
-        </div>
-      </div>
+    <div>
       <div>
+        <Header />
+      </div>
+      <div style={{ height }} className="contact-us-main-container">
+        <div style={{ height: height - 60 }} className="form-main-container">
+          <div style={{ width: width < 600 ? '300px' : '600px' }} className="form-container">
+            <Form handleOnClose={() => {}} />
+          </div>
+        </div>
         <Footer />
       </div>
     </div>

@@ -15,11 +15,13 @@ import connect from '../../assests/images/connect.png';
 import experince from '../../assests/images/experince.png';
 import QR from '../../assests/images/QR.svg';
 import Footer from '../../shared/Footer';
+import Header from '../../shared/Header';
 
 const CopyRight = function () {
   return (
     <div>
       <div className="main-container">
+        <Header />
         <div className="row" style={{ padding: 10 }}>
           <div className="col-1 col-s-1">
             <h1>Plan a plot</h1>
