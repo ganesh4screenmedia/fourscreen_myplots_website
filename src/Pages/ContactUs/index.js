@@ -22,11 +22,9 @@ const ContactUs = function () {
 
   return (
     <div>
-      <div>
-        <Header />
-      </div>
-      <div style={{ height }} className="contact-us-main-container">
-        <div style={{ height: height - 60 }} className="form-main-container">
+      <div style={{height}} className="contact-us-main-container">
+      <Header />
+        <div style={{ height: height - 145 }} className="form-main-container">
           <div style={{ width: width < 600 ? '300px' : '600px' }} className="form-container">
             <Form handleOnClose={() => {}} />
           </div>
