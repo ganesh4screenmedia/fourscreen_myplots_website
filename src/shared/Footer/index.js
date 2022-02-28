@@ -18,6 +18,9 @@ const Footer = function () {
   const onPrivacy = () => {
     navigate('/Privacy');
   };
+  const onAdminLogin = () => {
+    navigate('/AdminLogin');
+  };
 
   return (
     <div className="footer">
@@ -32,6 +35,10 @@ const Footer = function () {
       |
       <span className="contact-us" onClick={onTerms}>
         Terms of use
+      </span>
+      |
+      <span className="contact-us" onClick={onAdminLogin}>
+        Admin Login
       </span>
     </div>
   );
