@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { adminLogin } from '../../api/AdminLoginAPiCall';
 import Header from '../../shared/Header';
 import Footer from '../../shared/Footer';
-import {setTokenForPrivate} from '../../api';
+import { setTokenForPrivate } from '../../api';
 
 const theme = createTheme({
   palette: {
@@ -41,16 +41,13 @@ const AdminLogin = function () {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-   
-
     const requestBody = { email: data.get('email'), password: data.get('password') };
 
     adminLogin(requestBody)
       .then((res) => {
         console.log('res?.data?.token', res?.data?.token);
         setTokenForPrivate(res?.data?.token);
-         navigate('/ReportData');
-       ;
+        navigate('/ReportData');
       })
       .catch((err) => console.log('err', err));
   };
