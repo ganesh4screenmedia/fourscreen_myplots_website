@@ -1,7 +1,9 @@
+import { requestMethod } from '../Constants/apiConstants';
+
 export const doApiCall = (intercepter, method, url, requestBody = '') =>
   new Promise((resolve, reject) => {
     const header =
-      method === 'post' || method === 'delete'
+      method === requestMethod.post || method === requestMethod.delete
         ? {
             method,
             url,

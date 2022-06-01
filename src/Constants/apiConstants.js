@@ -4,7 +4,7 @@ export const API_URLS = {
 };
 
 export const requestMethod = {
-  get: 'get',
-  post: 'post',
-  delete: 'delete',
+  get: 'GET',
+  post: 'POST',
+  delete: 'DELETE',
 };

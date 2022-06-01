@@ -7,23 +7,29 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { adminLogin } from '../../api/AdminLoginAPiCall';
 import Header from '../../shared/Header';
 import Footer from '../../shared/Footer';
 import { setTokenForPrivate } from '../../api';
+import { setLoader } from '../../Store/actions';
+import useToast from '../../CustomHooks/Toast';
+import { toastType } from '../../Constants';
 
 const theme = createTheme({
-  palette: {
-    background: {
-      default: '#FFF',
-    },
-  },
+  // palette: {
+  //   background: {
+  //     default: '#FFF',
+  //   },
+  // },
 });
 
 const AdminLogin = function () {
   const [width, setWidth] = React.useState(window.innerWidth);
   const [height, setHeight] = React.useState(window.innerHeight);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const Toaster = useToast();
 
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
@@ -43,35 +49,66 @@ const AdminLogin = function () {
 
     const requestBody = { email: data.get('email'), password: data.get('password') };
 
+    dispatch(setLoader(true));
     adminLogin(requestBody)
       .then((res) => {
-        console.log('res?.data?.token', res?.data?.token);
+        console.log('res', res);
+        const options = {
+          message: res?.message,
+          severity: toastType.success,
+          onClose: () => {
+            Toaster.hide();
+          },
+        };
+
+        Toaster.show(options);
         setTokenForPrivate(res?.data?.token);
-        navigate('/ReportData');
+        navigate('/ReportData', { state: { token: res?.data?.token } });
       })
-      .catch((err) => console.log('err', err));
+      .catch((err) => {
+        console.log('err', err);
+        const options = {
+          message: err?.message,
+          severity: toastType.error,
+          onClose: () => {
+            Toaster.hide();
+          },
+        };
+
+        Toaster.show(options);
+      })
+      .finally(() => {
+        dispatch(setLoader(false));
+      });
   };
 
   return (
-    <div
-      style={{
-        height,
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        backgroundColor: '#4F299D',
-      }}
-    >
-      <div>
+    <div>
+      <div
+        style={{
+          height,
+          backgroundColor: '#4F299D',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Header />
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <div style={{ backgroundColor: '#FFF', width: width < 700 ? '80%' : '40%' }}>
+          <div
+            style={{
+              height: '330px',
+              backgroundColor: 'white',
+              width: width < 600 ? '300px' : '600px',
+            }}
+          >
             <ThemeProvider theme={theme}>
               <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
                   sx={{
-                    marginTop: 8,
+                    marginTop: 2,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
@@ -97,7 +134,7 @@ const AdminLogin = function () {
                       margin="normal"
                       name="password"
                       label="Password"
-                      type="password"
+                      type="text"
                       id="password"
                       autoComplete="current-password"
                     />
@@ -110,9 +147,11 @@ const AdminLogin = function () {
             </ThemeProvider>
           </div>
         </div>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <Footer />
+        <div style={{
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
+        }}>
+          <Footer />
+        </div>
       </div>
     </div>
   );
