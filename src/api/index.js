@@ -1,7 +1,7 @@
 /* eslint-disable prefer-promise-reject-errors */
 import axios from 'axios';
 
-const BASE_URL = 'https://47cc-14-98-32-198.ngrok.io';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const parsedError = (response) => {
   let message = response?.data?.message || 'Something unexpected happened!';
