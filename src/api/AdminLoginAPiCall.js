@@ -25,3 +25,14 @@ export const getReports = (requestBody) => {
       });
   });
 };
+
+export const adminLogout = () =>
+  new Promise((resolve, reject) => {
+    doApiCall(privateApi, requestMethod.get, API_URLS.adminLogout)
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });

@@ -1,6 +1,7 @@
 export const API_URLS = {
-  adminLogin: 'dev/adminLogin',
-  getReports: 'dev/getReports?',
+  adminLogin: 'adminLogin',
+  getReports: 'getReports?',
+  adminLogout: 'dev/adminLogout',
 };
 
 export const requestMethod = {
