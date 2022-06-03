@@ -63,6 +63,7 @@ const AdminLogin = function () {
 
         Toaster.show(options);
         setTokenForPrivate(res?.data?.token);
+        localStorage.setItem("token", res?.data?.token);
         navigate('/ReportData', { state: { token: res?.data?.token } });
       })
       .catch((err) => {
@@ -147,9 +148,13 @@ const AdminLogin = function () {
             </ThemeProvider>
           </div>
         </div>
-        <div style={{
-          display: 'flex', justifyContent: 'center', alignItems: 'center',
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
           <Footer />
         </div>
       </div>
