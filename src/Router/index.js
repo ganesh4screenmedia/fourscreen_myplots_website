@@ -21,11 +21,14 @@ const Router = function () {
           <Route path="/Terms" element={<Terms />} />
           <Route path="/Contact" element={<ContactUs />} />
           <Route path="*" element={<Navigate to="/" />} />
-          <Route path="/ReportData" element={
-            <Authenticate>
-              <ReportData />
-            </Authenticate>
-          } />
+          <Route
+            path="/ReportData"
+            element={
+              <Authenticate>
+                <ReportData />
+              </Authenticate>
+            }
+          />
         </Routes>
       </ScrollToTop>
     </div>

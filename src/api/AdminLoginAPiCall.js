@@ -12,6 +12,7 @@ export const adminLogin = (requestBody) =>
         reject(err);
       });
   });
+
 export const getReports = (requestBody) => {
   const url = `${API_URLS.getReports}startCount=${requestBody.startCount}&limit=${requestBody.limit}`;
 

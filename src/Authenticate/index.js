@@ -3,12 +3,7 @@ import React from 'react';
 import { Navigate } from 'react-router';
 
 const Authenticate = function ({ children }) {
-
-    return localStorage.getItem("token") ? (
-        children
-    ) : (
-        <Navigate to="/AdminLogin" />
-    );
-}
+  return localStorage.getItem('token') ? children : <Navigate to="/AdminLogin" />;
+};
 
 export default Authenticate;

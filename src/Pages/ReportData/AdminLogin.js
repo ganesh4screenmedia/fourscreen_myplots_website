@@ -63,7 +63,7 @@ const AdminLogin = function () {
 
         Toaster.show(options);
         setTokenForPrivate(res?.data?.token);
-        localStorage.setItem("token", res?.data?.token);
+        localStorage.setItem('token', res?.data?.token);
         navigate('/ReportData', { state: { token: res?.data?.token } });
       })
       .catch((err) => {

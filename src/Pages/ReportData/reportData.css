@@ -1,0 +1,60 @@
+.modal-style {
+  position: absolute;
+  width: 70%;
+  left: 15%;
+  top: 10%;
+  border-radius: 5px;
+  height: 80%;
+  display: block;
+  overflow: scroll;
+  background-color: white;
+}
+
+.modal-header-container {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  margin: 20px 0px;
+}
+
+.modal-header {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: 'center';
+}
+.user-image-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: row;
+  margin: 5px 0px;
+  border-bottom: 1px solid lightgray;
+  padding: 5px;
+}
+.user-image {
+  width: 25px;
+  height: 25px;
+  border-radius: 17.5px;
+}
+.user-name-container {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+
+@media screen and (max-width: 750px) {
+  .modal-header {
+    width: '80%';
+    display: flex;
+    justify-content: center;
+    align-items: 'center';
+  }
+  .modal-header-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+}

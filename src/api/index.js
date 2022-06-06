@@ -56,12 +56,13 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use(
-  (config) => {
-    config.headers['Access-Control-Allow-Origin'] = '*';
-    config.headers['content-type'] = 'application/json';
+  (config) => config,
+  //  {
+  //   // config.headers['Access-Control-Allow-Origin'] = '*';
+  //   // config.headers['content-type'] = 'application/json';
 
-    return config;
-  },
+  //   return config;
+  // },
   (error) => Promise.reject(error)
 );
 instance.interceptors.response.use(
@@ -79,16 +80,17 @@ instance.interceptors.response.use(
 
 const tokenizedAxiosInstance = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true,
+  // withCredentials: true,
 });
 
 tokenizedAxiosInstance.interceptors.request.use(
-  (config) => {
-    config.headers['Access-Control-Allow-Origin'] = '*';
-    config.headers['content-type'] = 'application/json';
+  (config) => config,
+  //  {
+  // config.headers['Access-Control-Allow-Origin'] = '*';
+  // config.headers['content-type'] = 'application/json';
 
-    return config;
-  },
+  //   return config;
+  // },
   (error) => Promise.reject(error)
 );
 
