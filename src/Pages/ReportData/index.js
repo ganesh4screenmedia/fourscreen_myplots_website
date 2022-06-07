@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
 import { Modal } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useLocation } from 'react-router-dom';
 import { setLoader } from '../../Store/actions';
 import './reportData.css';
 import userImage from '../../assests/images/user.png';
@@ -44,15 +43,16 @@ const useStyles = makeStyles(() =>
 const tabOptions = { userReports: 'User Reports', plotReports: 'Plot Reports' };
 
 const ReportData = function () {
-  const {
-    state: { token },
-  } = useLocation();
+  const token = localStorage.getItem('token');
   const [userReports, setUserReports] = React.useState([]);
   const [plotReports, setPlotReports] = React.useState([]);
   const [activeTab, setActiveTab] = React.useState(tabOptions.userReports);
   const [showPlotDetails, setShowPlotDetails] = React.useState(false);
   const [showPlotList, setShowPlotList] = React.useState(false);
-  const plotDetailsRef = React.useRef();
+  const [currentPlot, setCurrentPlot] = React.useState({});
+  const plotDetailsRef = React.useRef([]);
+  const [offset, setOffset] = React.useState(0);
+  const currentPlotRef = React.useRef(0);
   const styles = useStyles();
   const dispatch = useDispatch();
   const matches750px = useMediaQuery("(max-width:750px)");
@@ -111,41 +111,49 @@ const ReportData = function () {
       },
     };
 
-    axios(config)
-      .then((res) => {
-        setPlotReports(res?.data.allReports?.plotReports);
-        setUserReports(res?.data.allReports?.userReports);
-      })
-      .catch((error) => console.log(error))
-      .finally(() => dispatch(setLoader(false)));
+    if (token) {
+      axios(config)
+        .then((res) => {
+          setPlotReports(res?.data.allReports?.plotReports);
+          setUserReports(res?.data.allReports?.userReports);
+        })
+        .catch((error) => console.log(error))
+        .finally(() => dispatch(setLoader(false)));
+    }
   }, [token, dispatch]);
 
-  const renderDetailsButton = (param) =>
-  (
+  const renderPlotDetailsButton = (param) => (
     <Button
       variant="contained"
       color="primary"
       size="small"
-      style={{ fontSize: 12, color: 'white', backgroundColor: "grey", textTransform: "capitalize" }}
+      style={{ fontSize: 12, color: 'white', backgroundColor: 'grey', textTransform: 'capitalize' }}
       onClick={() => {
+        currentPlotRef.current = 0;
         if (activeTab === tabOptions.userReports) {
+          setCurrentPlot(userReports[param.id - 1]?.onReportUser?.userPlots[currentPlotRef.current])
           plotDetailsRef.current = userReports[param.id - 1]?.onReportUser?.userPlots;
           setShowPlotList(true);
         } else {
-          plotDetailsRef.current = plotReports[param.id - 1]?.reportPlots;
+          setCurrentPlot(plotReports[param.id - 1]?.reportPlots)
+          plotDetailsRef.current = [plotReports[param.id - 1]?.reportPlots];
           setShowPlotDetails(true);
         }
       }}
     >
       Plot Details
     </Button>
-  )
-
+  );
 
   const getUserReportColumns = [
     { field: 'id', headerName: 'Sl No', width: 80 },
     { field: 'reason', headerName: 'Reason', width: 200 },
-    { field: 'plotDetails', headerName: 'Plot Details', width: 150, renderCell: renderDetailsButton, },
+    {
+      field: 'plotDetails',
+      headerName: 'Plot Details',
+      width: 150,
+      renderCell: renderPlotDetailsButton,
+    },
     { field: 'onReportUserUserId', headerName: 'On Reported User Id', width: 200 },
     { field: 'onReportUserUserName', headerName: 'On Reported User Name', width: 200 },
     { field: 'onReportUserEmail', headerName: 'On Reported User Email', width: 200 },
@@ -159,7 +167,7 @@ const ReportData = function () {
   const getPlotReportColumns = [
     { field: 'id', headerName: 'Sl No', width: 80 },
     { field: 'reason', headerName: 'Reason', width: 200 },
-    { field: 'plotId', headerName: 'Plot Details', width: 150, renderCell: renderDetailsButton, },
+    { field: 'plotId', headerName: 'Plot Details', width: 150, renderCell: renderPlotDetailsButton },
     { field: 'onReportUserUserId', headerName: 'Host User Id', width: 150 },
     { field: 'onReportUserUserName', headerName: 'Host User Name', width: 200 },
     { field: 'onReportUserEmail', headerName: 'Host Email', width: 200 },
@@ -195,98 +203,231 @@ const ReportData = function () {
     return height;
   };
 
-  const plotDetails = () => (
-    <div
-      style={{
-        position: 'absolute',
-        width: '70%',
-        maxWidth: '500px',
-        height: 'fit-content',
-        maxHeight: '80%',
-        minWidth: '250px',
-        left: matches750px ? '15%' : '32%',
-        top: '10%',
-        padding: '20px',
-        display: 'block',
-        overflow: 'scroll',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        backgroundColor: 'white',
-      }}
-    >
-      <div className='modal-header-container'>
-        <div className='modal-header'>
-          <img
-            alt="Plot"
+  const plotDetails = (plot) => (
+    <>
+      <div
+        style={{
+          position: 'absolute',
+          width: '70%',
+          maxWidth: '500px',
+          height: 'fit-content',
+          maxHeight: '80%',
+          minWidth: '250px',
+          left: matches750px ? '15%' : 'calc((100% - 500px)/2)',
+          top: '10%',
+          padding: '20px',
+          display: 'block',
+          overflow: 'scroll',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexDirection: 'column',
+          backgroundColor: 'white',
+        }}
+      >
+        <div className="modal-header-container">
+          <div className="modal-header">
+            <img
+              alt="Plot"
+              style={{
+                minHeight: '150px',
+                minWidth: '200px',
+                maxHeight: '200px',
+                maxWidth: '250px',
+                width: '50%',
+                height: '40%',
+                objectFit: 'contain',
+              }}
+              src={
+                plot?.plotImage || plot?.profileImage ||
+                'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZXZlbnR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'
+              }
+            />
+          </div>
+          <div
+            className="modal-header"
             style={{
-              minHeight: '150px',
-              minWidth: '200px',
-              maxHeight: '200px',
-              maxWidth: '250px',
-              width: '50%',
-              height: '40%',
-              objectFit: 'contain',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              marginTop: '15px',
+              marginLeft: matches750px ? '0px' : '20px',
             }}
-            src={plotDetailsRef.current?.plotImage ||
-              'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZXZlbnR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'
-            }
-          />
+          >
+            <span
+              style={{
+                fontSize: '20px',
+                marginTop: '10px',
+                color: 'rgba(0, 0, 0, 0.5)',
+                fontWeight: 'bold',
+              }}
+            >
+              {plot?.plotName}
+            </span>
+            <span style={{ fontSize: '16px', margin: '10px 0px', color: 'rgba(0, 0, 0, 0.5)' }}>
+              {plot?.details}
+            </span>
+          </div>
         </div>
-        <div className='modal-header' style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', marginTop: '15px', marginLeft: matches750px ? '0px' : '20px' }}>
-          <span style={{ fontSize: '20px', marginTop: '10px', color: 'rgba(0, 0, 0, 0.5)', fontWeight: 'bold' }}>{plotDetailsRef.current?.plotName}</span>
-          <span style={{ fontSize: '16px', margin: '10px 0px', color: 'rgba(0, 0, 0, 0.5)' }}>{plotDetailsRef.current?.details}</span>
-        </div>
-      </div >
-      {
-        plotDetailsRef.current?.comments ? (
-          <div style={{ width: '95%', display: "flex", flexDirection: "column", padding: 10 }}>
+        {plot?.comments ? (
+          <div style={{ width: '95%', display: 'flex', flexDirection: 'column', padding: 10 }}>
             <p style={{ fontSize: '16px', margin: '5px' }}>Comments</p>
-            {plotDetailsRef.current?.comments?.map((comment, index) => (
-              <div key={index.toString()} style={{ margin: '10px 0px', display: 'flex', flexDirection: 'column', padding: '5px 5px' }} >
-                <div className='user-image-container'>
-                  <img
-                    alt="user"
-                    className='user-image'
-                    src={comment?.profileImage ||
-                      userImage
-                    }
-                  />
-                  <div className='user-name-container'>
-                    <span style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '14px', fontWeight: 'bold' }}>{comment?.userName}</span>
-                    <span style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '12px', marginTop: '2px' }}>{comment?.comment}</span>
+            {plot?.comments?.map((comment, index) => (
+              <div
+                key={index.toString()}
+                style={{
+                  margin: '10px 0px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '5px 5px',
+                }}
+              >
+                <div className="user-image-container">
+                  <img alt="user" className="user-image" src={comment?.profileImage || userImage} />
+                  <div className="user-name-container">
+                    <span
+                      style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '14px', fontWeight: 'bold' }}
+                    >
+                      {comment?.userName}
+                    </span>
+                    <span style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '12px', marginTop: '2px' }}>
+                      {comment?.comment}
+                    </span>
                   </div>
                 </div>
-                {comment?.replies && (
+                {comment?.replies &&
                   comment?.replies?.map((reply, ind) => (
-                    <div key={ind.toString()} style={{ display: 'flex', flexDirection: 'column', marginLeft: '30px', }}>
-                      <div className='user-image-container'>
+                    <div
+                      key={ind.toString()}
+                      style={{ display: 'flex', flexDirection: 'column', marginLeft: '30px' }}
+                    >
+                      <div className="user-image-container">
                         <img
                           alt="user"
-                          className='user-image'
-                          src={reply?.profileImage ||
+                          className="user-image"
+                          src={
+                            reply?.profileImage ||
                             'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZXZlbnR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'
                           }
                         />
-                        <div className='user-name-container'>
-                          <span style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '14px', fontWeight: 'bold' }}>{reply?.userName}</span>
-                          <span style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '12px', marginTop: '2px' }}>{reply?.reply}</span>
+                        <div className="user-name-container">
+                          <span
+                            style={{
+                              color: 'rgba(0, 0, 0, 0.5)',
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            {reply?.userName}
+                          </span>
+                          <span
+                            style={{
+                              color: 'rgba(0, 0, 0, 0.5)',
+                              fontSize: '12px',
+                              marginTop: '2px',
+                            }}
+                          >
+                            {reply?.reply}
+                          </span>
                         </div>
                       </div>
                     </div>
-                  ))
-                )}
+                  ))}
               </div>
-            ))
-            }
+            ))}
           </div>
         ) : (
-          <div style={{ width: '95%', display: "flex", justifyContent: 'center', alignItems: 'center', flexDirection: "column", padding: 10 }}>
+          <div
+            style={{
+              width: '95%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              padding: 10,
+            }}
+          >
             <p style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '14px' }}>No comments </p>
           </div>
+        )}
+      </div >
+      {
+        (activeTab === tabOptions.userReports && plotDetailsRef.current?.length > 1) && (
+          <div style={{
+            position: 'absolute', bottom: '4%', left: '32%', width: '40%', minWidth: '200px', height: '5%', backgroundColor: 'transparent', display: 'flex',
+            justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'row'
+          }}>
+            <Button
+              disableTouchRipple
+              disabled={currentPlotRef === 0}
+              variant="text"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '30%',
+                height: '80%',
+                maxWidth: '120px',
+                color: 'black',
+                textTransform: 'none',
+                fontSize: '16px',
+                backgroundColor: 'white'
+              }}
+              onClick={() => {
+                if (currentPlotRef.current > 0) {
+                  currentPlotRef.current -= 1;
+                  setCurrentPlot(plotDetailsRef.current[currentPlotRef.current]);
+                }
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              disableTouchRipple
+              disabled={currentPlotRef + 1 === plotDetailsRef.current?.length}
+              variant="text"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '30%',
+                maxWidth: '120px',
+                height: '80%',
+                color: 'black',
+                textTransform: 'none',
+                fontSize: '16px',
+                backgroundColor: 'white'
+              }}
+              onClick={() => {
+                if (plotDetailsRef.current?.length > currentPlotRef.current + 1) {
+                  currentPlotRef.current += 1;
+                  setCurrentPlot(plotDetailsRef.current[currentPlotRef.current]);
+                }
+              }
+              }
+            >
+              Next
+            </Button>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '30%',
+                maxWidth: '120px',
+                height: '80%',
+                color: 'white',
+                textTransform: 'none',
+                fontSize: '16px',
+              }}
+            >
+              {`${currentPlotRef.current + 1} of ${plotDetailsRef.current?.length}`}
+            </div>
+          </div >
         )
       }
-    </div >
+    </ >
+  
   );
 
   return (
@@ -294,12 +435,12 @@ const ReportData = function () {
       <div
         style={{
           width: '100%',
-          marginTop: 20,
+          marginTop: '20px',
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
-          height: 40,
+          height: '40px',
         }}
       >
         <div
@@ -308,12 +449,13 @@ const ReportData = function () {
             justifyContent: 'center',
             alignItems: 'center',
             width: '50%',
-            height: 40,
+            height: '40px',
             borderBottom:
               activeTab === tabOptions.userReports ? '2px solid #808080' : '2px solid transparent',
           }}
         >
           <Button
+            disableTouchRipple
             variant="text"
             style={{
               display: 'flex',
@@ -342,6 +484,7 @@ const ReportData = function () {
           }}
         >
           <Button
+            disableTouchRipple
             variant="text"
             style={{
               display: 'flex',
@@ -360,7 +503,7 @@ const ReportData = function () {
         </div>
       </div>
       <div style={{ width: '100%', height: '100%', padding: 20, flexDirection: 'column' }}>
-        <div style={{ height: 650, width: '100%' }}>
+        <div style={{ height: '650px', width: '100%' }}>
           {activeTab === tabOptions.userReports ? (
             <DataGrid
               className={styles.root}
@@ -383,27 +526,17 @@ const ReportData = function () {
         </div>
       </div>
       <Modal
-        // className='modal-style'
-        open={showPlotDetails}
-        onClose={() => setShowPlotDetails(false)}
-        onBackdropClick={() => {
-          setShowPlotDetails(false);
-        }}
+        open={activeTab === tabOptions.userReports ? showPlotList : showPlotDetails}
+        onClose={() => activeTab === tabOptions.userReports ? setShowPlotList(false) : setShowPlotDetails(false)}
+        onBackdropClick={() =>
+          activeTab === tabOptions.userReports ? setShowPlotList(false) : setShowPlotDetails(false)
+        }
       >
-        {plotDetails()}
+        {
+          currentPlot && plotDetails(currentPlot)
+        }
       </Modal>
-      <Modal
-        open={showPlotList}
-        onClose={() => setShowPlotList(false)}
-        onBackdropClick={() => {
-          setShowPlotList(false);
-        }}
-      >
-        <div style={{ position: 'absolute', width: '90%', height: '80%', backgroundColor: 'white', left: '5%', top: '10%' }}>
-          <h4>hi</h4>
-        </div>
-      </Modal>
-    </div>
+    </div >
   );
 };
 
