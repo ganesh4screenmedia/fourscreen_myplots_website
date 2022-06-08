@@ -24,7 +24,7 @@ const Footer = function () {
 
   return (
     <div className="footer">
-      <p >Copyright @2022. All rights reserved</p>
+      <p>Copyright @2022. All rights reserved</p>
       <span className="contact-us" onClick={onContactUs}>
         Contact us
       </span>

@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import Button from '@mui/material/Button';
 import { Modal } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useNavigate } from 'react-router-dom';
 import { setLoader } from '../../Store/actions';
 import './reportData.css';
 import userImage from '../../assests/images/user.png';
@@ -55,7 +56,9 @@ const ReportData = function () {
   const currentPlotRef = React.useRef(0);
   const styles = useStyles();
   const dispatch = useDispatch();
-  const matches750px = useMediaQuery("(max-width:750px)");
+  const matches750px = useMediaQuery('(max-width:750px)');
+  const offsetValue = 30;
+  const navigate = useNavigate();
 
   const getUserReportRows = () => {
     if (userReports?.length > 0) {
@@ -105,7 +108,7 @@ const ReportData = function () {
     dispatch(setLoader(true));
     const config = {
       method: 'get',
-      url: `https://api.myplots.co/dev/getReports?startCount=${0}&limit=${0 + 10}`,
+      url: `${process.env.REACT_APP_BASE_URL}getReports?startCount=${offset}&limit=${offsetValue}`,
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -114,28 +117,33 @@ const ReportData = function () {
     if (token) {
       axios(config)
         .then((res) => {
-          setPlotReports(res?.data.allReports?.plotReports);
-          setUserReports(res?.data.allReports?.userReports);
+          const newPlotReports = res?.data.allReports?.plotReports
+          const newUserReports = res?.data.allReports?.userReports;
+
+          setPlotReports((existingPlotReports) => [...existingPlotReports, ...newPlotReports]);
+          setUserReports((existingUserReports) => [...existingUserReports, ...newUserReports]);
         })
         .catch((error) => console.log(error))
         .finally(() => dispatch(setLoader(false)));
     }
-  }, [token, dispatch]);
+  }, [token, dispatch, offset]);
 
   const renderPlotDetailsButton = (param) => (
     <Button
       variant="contained"
       color="primary"
       size="small"
-      style={{ fontSize: 12, color: 'white', backgroundColor: 'grey', textTransform: 'capitalize' }}
+      style={{ fontSize: '12px', color: 'white', backgroundColor: 'grey', textTransform: 'capitalize' }}
       onClick={() => {
         currentPlotRef.current = 0;
         if (activeTab === tabOptions.userReports) {
-          setCurrentPlot(userReports[param.id - 1]?.onReportUser?.userPlots[currentPlotRef.current])
+          setCurrentPlot(
+            userReports[param.id - 1]?.onReportUser?.userPlots[currentPlotRef.current]
+          );
           plotDetailsRef.current = userReports[param.id - 1]?.onReportUser?.userPlots;
           setShowPlotList(true);
         } else {
-          setCurrentPlot(plotReports[param.id - 1]?.reportPlots)
+          setCurrentPlot(plotReports[param.id - 1]?.reportPlots);
           plotDetailsRef.current = [plotReports[param.id - 1]?.reportPlots];
           setShowPlotDetails(true);
         }
@@ -167,7 +175,12 @@ const ReportData = function () {
   const getPlotReportColumns = [
     { field: 'id', headerName: 'Sl No', width: 80 },
     { field: 'reason', headerName: 'Reason', width: 200 },
-    { field: 'plotId', headerName: 'Plot Details', width: 150, renderCell: renderPlotDetailsButton },
+    {
+      field: 'plotId',
+      headerName: 'Plot Details',
+      width: 150,
+      renderCell: renderPlotDetailsButton,
+    },
     { field: 'onReportUserUserId', headerName: 'Host User Id', width: 150 },
     { field: 'onReportUserUserName', headerName: 'Host User Name', width: 200 },
     { field: 'onReportUserEmail', headerName: 'Host Email', width: 200 },
@@ -238,7 +251,8 @@ const ReportData = function () {
                 objectFit: 'contain',
               }}
               src={
-                plot?.plotImage || plot?.profileImage ||
+                plot?.plotImage ||
+                plot?.profileImage ||
                 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8ZXZlbnR8ZW58MHx8MHx8&ixlib=rb-1.2.1&w=1000&q=80'
               }
             />
@@ -290,7 +304,9 @@ const ReportData = function () {
                     >
                       {comment?.userName}
                     </span>
-                    <span style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '12px', marginTop: '2px' }}>
+                    <span
+                      style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '12px', marginTop: '2px' }}
+                    >
                       {comment?.comment}
                     </span>
                   </div>
@@ -350,92 +366,155 @@ const ReportData = function () {
             <p style={{ color: 'rgba(0, 0, 0, 0.5)', fontSize: '14px' }}>No comments </p>
           </div>
         )}
-      </div >
-      {
-        (activeTab === tabOptions.userReports && plotDetailsRef.current?.length > 1) && (
-          <div style={{
-            position: 'absolute', bottom: '4%', left: '32%', width: '40%', minWidth: '200px', height: '5%', backgroundColor: 'transparent', display: 'flex',
-            justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'row'
-          }}>
-            <Button
-              disableTouchRipple
-              disabled={currentPlotRef === 0}
-              variant="text"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '30%',
-                height: '80%',
-                maxWidth: '120px',
-                color: 'black',
-                textTransform: 'none',
-                fontSize: '16px',
-                backgroundColor: 'white'
-              }}
-              onClick={() => {
-                if (currentPlotRef.current > 0) {
-                  currentPlotRef.current -= 1;
-                  setCurrentPlot(plotDetailsRef.current[currentPlotRef.current]);
-                }
-              }}
-            >
-              Back
-            </Button>
-            <Button
-              disableTouchRipple
-              disabled={currentPlotRef + 1 === plotDetailsRef.current?.length}
-              variant="text"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '30%',
-                maxWidth: '120px',
-                height: '80%',
-                color: 'black',
-                textTransform: 'none',
-                fontSize: '16px',
-                backgroundColor: 'white'
-              }}
-              onClick={() => {
-                if (plotDetailsRef.current?.length > currentPlotRef.current + 1) {
-                  currentPlotRef.current += 1;
-                  setCurrentPlot(plotDetailsRef.current[currentPlotRef.current]);
-                }
+      </div>
+      {activeTab === tabOptions.userReports && plotDetailsRef.current?.length > 1 && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '4%',
+            left: '32%',
+            width: '40%',
+            minWidth: '200px',
+            height: '5%',
+            backgroundColor: 'transparent',
+            display: 'flex',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            flexDirection: 'row',
+          }}
+        >
+          <Button
+            disableTouchRipple
+            disabled={currentPlotRef === 0}
+            variant="text"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '30%',
+              height: '80%',
+              maxWidth: '120px',
+              color: 'black',
+              textTransform: 'none',
+              fontSize: '16px',
+              backgroundColor: 'white',
+            }}
+            onClick={() => {
+              if (currentPlotRef.current > 0) {
+                currentPlotRef.current -= 1;
+                setCurrentPlot(plotDetailsRef.current[currentPlotRef.current]);
               }
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            disableTouchRipple
+            disabled={currentPlotRef + 1 === plotDetailsRef.current?.length}
+            variant="text"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '30%',
+              maxWidth: '120px',
+              height: '80%',
+              color: 'black',
+              textTransform: 'none',
+              fontSize: '16px',
+              backgroundColor: 'white',
+            }}
+            onClick={() => {
+              if (plotDetailsRef.current?.length > currentPlotRef.current + 1) {
+                currentPlotRef.current += 1;
+                setCurrentPlot(plotDetailsRef.current[currentPlotRef.current]);
               }
-            >
-              Next
-            </Button>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '30%',
-                maxWidth: '120px',
-                height: '80%',
-                color: 'white',
-                textTransform: 'none',
-                fontSize: '16px',
-              }}
-            >
-              {`${currentPlotRef.current + 1} of ${plotDetailsRef.current?.length}`}
-            </div>
-          </div >
-        )
-      }
-    </ >
-  
+            }}
+          >
+            Next
+          </Button>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '30%',
+              maxWidth: '120px',
+              height: '80%',
+              color: 'white',
+              textTransform: 'none',
+              fontSize: '16px',
+            }}
+          >
+            {`${currentPlotRef.current + 1} of ${plotDetailsRef.current?.length}`}
+          </div>
+        </div>
+      )}
+    </>
   );
+
+  const handleOnPageChange = (pageNumber) => {
+    let length = 0;
+
+    if (activeTab === tabOptions.userReports) {
+      length = userReports?.length
+    } else {
+      length = plotReports?.length;
+    }
+    if ((length === (pageNumber + 1) * 10) && (length % offsetValue === 0) && (length === (offset + offsetValue))) {
+      setOffset(length);
+    }
+  };
+
+  const handleOnLogOut = () => {
+    dispatch(setLoader(true));
+    const config = {
+      method: 'get',
+      url: `${process.env.REACT_APP_BASE_URL}adminLogout`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    axios(config)
+      .then((res) => {
+        console.log('log out axios res', res);
+        localStorage.clear();
+        navigate('/AdminLogin');
+      })
+      .catch((error) => console.log('error log out axios', error))
+      .finally(() => {
+        dispatch(setLoader(false));
+      });
+  }
 
   return (
     <div style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
+      <div style={{ position: 'absolute', right: '10px', top: '10px', width: '100px' }}>
+        <Button
+          disableTouchRipple
+          variant="text"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            height: '30px',
+            color: 'white',
+            borderRadius: '3px',
+            textTransform: 'capitalize',
+            fontSize: '14px',
+            backgroundColor: '#4f299d'
+          }}
+          onClick={handleOnLogOut}
+        >
+          Log out
+        </Button>
+      </div>
       <div
         style={{
           width: '100%',
-          marginTop: '20px',
+          marginTop: '60px',
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
@@ -462,10 +541,10 @@ const ReportData = function () {
               justifyContent: 'center',
               alignItems: 'center',
               width: '100%',
-              height: 40,
+              height: '40px',
               color: 'black',
               textTransform: 'none',
-              fontSize: 18,
+              fontSize: '18px',
             }}
             onClick={handleOnUserReportsTabClick}
           >
@@ -491,10 +570,10 @@ const ReportData = function () {
               justifyContent: 'center',
               alignItems: 'center',
               width: '100%',
-              height: 40,
+              height: '40px',
               color: 'black',
               textTransform: 'none',
-              fontSize: 18,
+              fontSize: '18px',
             }}
             onClick={handleOnPlotReportsTabClick}
           >
@@ -503,40 +582,46 @@ const ReportData = function () {
         </div>
       </div>
       <div style={{ width: '100%', height: '100%', padding: 20, flexDirection: 'column' }}>
-        <div style={{ height: '650px', width: '100%' }}>
+        <div style={{ height: '600px', width: '100%' }}>
           {activeTab === tabOptions.userReports ? (
             <DataGrid
               className={styles.root}
               rows={getUserReportRows()}
               columns={getUserReportColumns}
+              pageSize={10}
+              rowsPerPageOptions={[10]}
               getRowHeight={(item) =>
                 getRowLength(item.model.reason?.length, item.model.reportedUserEmail?.length)
               }
+              onPageChange={handleOnPageChange}
             />
           ) : (
             <DataGrid
               className={styles.root}
               rows={getPlotReportRows()}
               columns={getPlotReportColumns}
+              pageSize={10}
+              rowsPerPageOptions={[10]}
               getRowHeight={(item) =>
                 getRowLength(item.model.reason?.length, item.model.plotAddress?.length)
               }
+              onPageChange={handleOnPageChange}
             />
           )}
         </div>
       </div>
       <Modal
         open={activeTab === tabOptions.userReports ? showPlotList : showPlotDetails}
-        onClose={() => activeTab === tabOptions.userReports ? setShowPlotList(false) : setShowPlotDetails(false)}
+        onClose={() =>
+          activeTab === tabOptions.userReports ? setShowPlotList(false) : setShowPlotDetails(false)
+        }
         onBackdropClick={() =>
           activeTab === tabOptions.userReports ? setShowPlotList(false) : setShowPlotDetails(false)
         }
       >
-        {
-          currentPlot && plotDetails(currentPlot)
-        }
+        {currentPlot && plotDetails(currentPlot)}
       </Modal>
-    </div >
+    </div>
   );
 };
 

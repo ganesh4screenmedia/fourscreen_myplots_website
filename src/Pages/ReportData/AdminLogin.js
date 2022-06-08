@@ -64,7 +64,7 @@ const AdminLogin = function () {
         Toaster.show(options);
         setTokenForPrivate(res?.data?.token);
         localStorage.setItem('token', res?.data?.token);
-        navigate('/ReportData', { state: { token: res?.data?.token } });
+        navigate('/ReportData');
       })
       .catch((err) => {
         console.log('err', err);
@@ -135,7 +135,7 @@ const AdminLogin = function () {
                       margin="normal"
                       name="password"
                       label="Password"
-                      type="text"
+                      type="password"
                       id="password"
                       autoComplete="current-password"
                     />
