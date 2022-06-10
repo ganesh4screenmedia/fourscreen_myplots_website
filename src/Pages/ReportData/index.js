@@ -9,6 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { setLoader } from '../../Store/actions';
 import './reportData.css';
 import userImage from '../../assests/images/user.png';
+import { tokenValidation } from '../../helpers';
+import { API_URLS, requestMethod } from '../../Constants/apiConstants';
 
 const axios = require('axios');
 
@@ -37,6 +39,9 @@ const useStyles = makeStyles(() =>
       '& .MuiDataGrid-cell--textLeft': {
         justifyContent: 'center',
       },
+      '& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
+        outline: 'none',
+      },
     },
   })
 );
@@ -44,7 +49,6 @@ const useStyles = makeStyles(() =>
 const tabOptions = { userReports: 'User Reports', plotReports: 'Plot Reports' };
 
 const ReportData = function () {
-  const token = localStorage.getItem('token');
   const [userReports, setUserReports] = React.useState([]);
   const [plotReports, setPlotReports] = React.useState([]);
   const [activeTab, setActiveTab] = React.useState(tabOptions.userReports);
@@ -106,34 +110,47 @@ const ReportData = function () {
 
   React.useEffect(() => {
     dispatch(setLoader(true));
-    const config = {
-      method: 'get',
-      url: `${process.env.REACT_APP_BASE_URL}getReports?startCount=${offset}&limit=${offsetValue}`,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
+    tokenValidation()
+      .then((token) => {
+        const config = {
+          method: 'get',
+          url: `${process.env.REACT_APP_BASE_URL}${API_URLS.getReports}startCount=${offset}&limit=${offsetValue}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
 
-    if (token) {
-      axios(config)
-        .then((res) => {
-          const newPlotReports = res?.data.allReports?.plotReports
-          const newUserReports = res?.data.allReports?.userReports;
+        axios(config)
+          .then((res) => {
+            const newPlotReports = res?.data.allReports?.plotReports;
+            const newUserReports = res?.data.allReports?.userReports;
 
-          setPlotReports((existingPlotReports) => [...existingPlotReports, ...newPlotReports]);
-          setUserReports((existingUserReports) => [...existingUserReports, ...newUserReports]);
-        })
-        .catch((error) => console.log(error))
-        .finally(() => dispatch(setLoader(false)));
-    }
-  }, [token, dispatch, offset]);
+            setPlotReports((existingPlotReports) => [...existingPlotReports, ...newPlotReports]);
+            setUserReports((existingUserReports) => [...existingUserReports, ...newUserReports]);
+          })
+          .catch((error) => console.log(error))
+          .finally(() => dispatch(setLoader(false)));
+      })
+      .catch((err) => {
+        console.log('err tokenValidation', err);
+        localStorage.clear();
+        navigate('/AdminLogin');
+      })
+      .finally(() => dispatch(setLoader(false)));
+
+  }, [dispatch, offset, navigate]);
 
   const renderPlotDetailsButton = (param) => (
     <Button
       variant="contained"
       color="primary"
       size="small"
-      style={{ fontSize: '12px', color: 'white', backgroundColor: 'grey', textTransform: 'capitalize' }}
+      style={{
+        fontSize: '12px',
+        color: 'white',
+        backgroundColor: 'grey',
+        textTransform: 'capitalize',
+      }}
       onClick={() => {
         currentPlotRef.current = 0;
         if (activeTab === tabOptions.userReports) {
@@ -202,18 +219,17 @@ const ReportData = function () {
     }
   };
 
-  const getRowLength = (reasonLength, plotAddressLength) => {
-    let height = 50;
+  const getRowLength = (item) => {
+    const minHeight = 50;
+    const max = Math.max(
+      item.model.reason?.length,
+      item.model.reportedUserEmail?.length,
+      item.model.reportedUserUserName?.length,
+      item.model.onReportUserUserName?.length,
+      item.model.onReportUserEmail?.length);
 
-    if (reasonLength > plotAddressLength) {
-      if (height < reasonLength * 1.1) {
-        height = reasonLength * 1.1;
-      }
-    } else if (height < plotAddressLength * 1.1) {
-      height = plotAddressLength * 1.1;
-    }
 
-    return height;
+    return minHeight < max ? max : minHeight;
   };
 
   const plotDetails = (plot) => (
@@ -457,22 +473,27 @@ const ReportData = function () {
     let length = 0;
 
     if (activeTab === tabOptions.userReports) {
-      length = userReports?.length
+      length = userReports?.length;
     } else {
       length = plotReports?.length;
     }
-    if ((length === (pageNumber + 1) * 10) && (length % offsetValue === 0) && (length === (offset + offsetValue))) {
+    if (
+      length === (pageNumber + 1) * 10 &&
+      length % offsetValue === 0 &&
+      length === offset + offsetValue
+    ) {
       setOffset(length);
     }
   };
 
   const handleOnLogOut = () => {
     dispatch(setLoader(true));
+    const currentToken = localStorage.getItem('token');
     const config = {
-      method: 'get',
-      url: `${process.env.REACT_APP_BASE_URL}adminLogout`,
+      method: requestMethod.get,
+      url: `${process.env.REACT_APP_BASE_URL}${API_URLS.adminLogout}`,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${currentToken}`,
       },
     };
 
@@ -486,7 +507,7 @@ const ReportData = function () {
       .finally(() => {
         dispatch(setLoader(false));
       });
-  }
+  };
 
   return (
     <div style={{ width: '100%', height: '100%', backgroundColor: 'white' }}>
@@ -504,7 +525,7 @@ const ReportData = function () {
             borderRadius: '3px',
             textTransform: 'capitalize',
             fontSize: '14px',
-            backgroundColor: '#4f299d'
+            backgroundColor: '#4f299d',
           }}
           onClick={handleOnLogOut}
         >
@@ -591,7 +612,7 @@ const ReportData = function () {
               pageSize={10}
               rowsPerPageOptions={[10]}
               getRowHeight={(item) =>
-                getRowLength(item.model.reason?.length, item.model.reportedUserEmail?.length)
+                getRowLength(item)
               }
               onPageChange={handleOnPageChange}
             />
@@ -603,7 +624,7 @@ const ReportData = function () {
               pageSize={10}
               rowsPerPageOptions={[10]}
               getRowHeight={(item) =>
-                getRowLength(item.model.reason?.length, item.model.plotAddress?.length)
+                getRowLength(item)
               }
               onPageChange={handleOnPageChange}
             />

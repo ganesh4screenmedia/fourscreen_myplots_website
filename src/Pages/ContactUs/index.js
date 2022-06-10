@@ -26,7 +26,7 @@ const ContactUs = function () {
         <Header />
         <div style={{ height: height - 145 }} className="form-main-container">
           <div style={{ width: width < 600 ? '300px' : '600px' }} className="form-container">
-            <Form handleOnClose={() => {}} />
+            <Form handleOnClose={() => { }} />
           </div>
         </div>
         <Footer />

@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import { adminLogin } from '../../api/AdminLoginAPiCall';
 import Header from '../../shared/Header';
 import Footer from '../../shared/Footer';
-import { setTokenForPrivate } from '../../api';
 import { setLoader } from '../../Store/actions';
 import useToast from '../../CustomHooks/Toast';
 import { toastType } from '../../Constants';
@@ -62,7 +61,6 @@ const AdminLogin = function () {
         };
 
         Toaster.show(options);
-        setTokenForPrivate(res?.data?.token);
         localStorage.setItem('token', res?.data?.token);
         navigate('/ReportData');
       })

@@ -1,7 +1,8 @@
 export const API_URLS = {
   adminLogin: 'adminLogin',
   getReports: 'getReports?',
-  adminLogout: 'dev/adminLogout',
+  adminLogout: 'adminLogout',
+  getAdminJwtToken: 'getAdminJwtToken'
 };
 
 export const requestMethod = {
